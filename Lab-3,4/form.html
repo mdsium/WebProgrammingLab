@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Info</title>
+    <style>
+        div{
+            margin-bottom: 10px;
+            border-bottom: 1px solid lightgrey;
+            padding-bottom: 5px;
+        }
+        fieldset{
+            width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <fieldset>
+        <legend>Student Information</legend>
+    <form action="save.php" method="post" enctype="multipart/form-data">
+        <div>
+            <label>Name</label><br>
+            <input type="text" name="name" placeholder="Enter name" required >
+        </div>
+        <div>
+            <label>Contact</label><br>
+            <input type="tel" name="contact" placeholder="Enter mobile" required >
+        </div>
+        <div>
+            <label>City</label><br>
+           <select name="city">
+              <option value="1">Dhaka</option>
+              <option value="2">Khulna</option>
+              <option value="3">Barishal</option>
+           </select>
+        </div>
+        <div>
+            <label>Gender</label><br>
+             <input type="radio" name="gender" value="1" /> Male  <input type="radio" name="gender" value="0" />Female
+        </div>
+        <div>
+            Subjects<br>
+            <input type="checkbox" name="subjects[]" value="english" />English
+            <input type="checkbox" name="subjects[]" value="math" />Math
+            <input type="checkbox" name="subjects[]" value="computer" />computer
+            <input type="checkbox" name="subjects[]" value="accounting" />Accouting
+        </div>
+        <div>
+            Password<br>
+            <input type="password" name="password" placeholder="Enter password"  required/>
+        </div>
+        <div>
+            Photo<br>
+            <input type="file" name="photo" />
+        </div>
+        <div>
+            Address<br>
+            <textarea name="address" placeholder="Address"></textarea>
+        </div>
+        <div>
+            <input type="hidden" name="code" value="242343424234554" />
+            <input type="submit" value="Submit" />
+            <input type="reset" value="Reset" />
+        </div>
+    </form>
+
+</body>
+</html>
