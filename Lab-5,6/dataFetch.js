@@ -1,4 +1,4 @@
-export default class DataFetcher {
+export default class DataFetch {
     constructor(url, targetElementId) {
       this.url = url;
       this.targetElementId = targetElementId;
