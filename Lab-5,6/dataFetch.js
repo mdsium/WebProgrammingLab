@@ -10,7 +10,7 @@ export default class DataFetch {
         const data = await response.ok ? await response.json() : { error: `Error: ${response.status}` };
         this.updateDOM(data);
       } catch {
-        this.updateDOM({ error: 'Failed to fetch data' });
+        this.updateDOM({ error: 'Failed to fetch data' }); 
       }
     }
   
