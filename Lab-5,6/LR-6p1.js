@@ -4,4 +4,3 @@ function getNameValues() {
     document.getElementById('output').textContent = `First Name: ${firstName} , Last Name: ${lastName} Full Name: ${firstName} ${lastName}`;
   }
   document.getElementById('submitButton').addEventListener('click', getNameValues);
-  

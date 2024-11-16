@@ -10,5 +10,3 @@ const palindromeChecker = {
     const result = palindromeChecker.isPalindrome(inputString);
     document.getElementById('result').textContent = result ? `"${inputString}" is a palindrome!` : `"${inputString}" is not a palindrome.`;
   });
-  
-

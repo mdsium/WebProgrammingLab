@@ -3,7 +3,6 @@ export default class DataFetch {
       this.url = url;
       this.targetElementId = targetElementId;
     }
-  
     async fetchData() {
       try {
         const response = await fetch(this.url);
@@ -13,12 +12,9 @@ export default class DataFetch {
         this.updateDOM({ error: 'Failed to fetch data' }); 
       }
     }
-  
     updateDOM(data) {
       const target = document.getElementById(this.targetElementId);
       target.innerHTML = data.error ? data.error : `<ul>${data.map(item => `<li>User Id: ${item.userId} ||  ID: ${item.id} || Title: ${item.title} </li>`).join('')}</ul>`;
     //   ${JSON.stringify(item)}
     }
   }
-  
-  
