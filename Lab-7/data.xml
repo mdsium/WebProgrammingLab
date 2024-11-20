@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+<user id="1">
+<name>Md Sium</name>
+<age>23</age>
+<city>Dhaka</city>
+</user>
+<user id="2">
+<name>Mohammed</name>
+<age>30</age>
+<city>Los angeles</city>
+</user>
+</users>
