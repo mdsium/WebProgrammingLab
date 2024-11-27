@@ -28,6 +28,7 @@ export default class DataFetch {
           <li>Date: ${data.results.date}</li>
           <li>Sunrise: ${data.results.sunrise}</li>
           <li>Sunset: ${data.results.sunset}</li>
+          <li>Sunset: ${data.results.timezone}</li>
         </ul>`;
     } else {
       target.innerHTML = `<p>No valid data found</p>`;
