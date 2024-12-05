@@ -136,8 +136,9 @@ export default class DataFetch {
         <ul>
           ${durations.map((d) => `<li>${d}</li>`).join("")}
         </ul>
-        <h4>Time Until Next Prayer:</h4>
-        <p>${nextPrayer ? `${nextPrayer.name} in ${timeUntilNextPrayer}` : "No upcoming prayers today"}</p>
+        <h4>Time Until Next Prayer:</h4><ul>
+        <li>${nextPrayer ? `${nextPrayer.name} in ${timeUntilNextPrayer}` : "No upcoming prayers today"}</li>
+        </ul>
       `;
     } else {
       target.innerHTML = `<p>No valid data found</p>`;
@@ -163,4 +164,3 @@ fetcher.fetchData();
 // Optionally, set up a button to refresh data manually
 document
   .getElementById("fetchButton")
-  .addEventListener("click", () => fetcher.fetchData());
