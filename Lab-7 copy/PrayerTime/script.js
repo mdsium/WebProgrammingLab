@@ -4,6 +4,7 @@ export default class DataFetch {
     this.country = "Bangladesh"; // Fixed country
     this.targetElementId = targetElementId;
     this.baseUrl = "http://api.aladhan.com/v1/timingsByCity";
+    this.nextPrayerInterval = null; // Store interval for countdown
     this.initializeClock(); // Initialize the real-time clock
   }
 
@@ -35,15 +36,6 @@ export default class DataFetch {
     return now;
   }
 
-  // Calculate the duration between two times and return as a string
-  calculateDuration(start, end) {
-    const diffMs = end - start;
-    const diffMinutes = Math.floor(diffMs / 60000);
-    const hours = Math.floor(diffMinutes / 60);
-    const minutes = diffMinutes % 60;
-    return `${hours}h ${minutes}m`;
-  }
-
   // Calculate time left until the next prayer
   getTimeUntil(nextPrayerTime) {
     const now = new Date();
@@ -52,7 +44,8 @@ export default class DataFetch {
     const diffMinutes = Math.floor(diffMs / 60000);
     const hours = Math.floor(diffMinutes / 60);
     const minutes = diffMinutes % 60;
-    return `${hours}h ${minutes}m`;
+    const seconds = Math.floor((diffMs % 60000) / 1000);
+    return `${hours}h ${minutes}m ${seconds}s`;
   }
 
   // Initialize a clock that updates every second
@@ -72,7 +65,7 @@ export default class DataFetch {
   async fetchData() {
     try {
       const date = this.getCurrentDate();
-      const url = `${this.baseUrl}/${date}?city=${this.city}&country=${this.country}`;
+      const url = `${this.baseUrl}?city=${this.city}&country=${this.country}`;
       const response = await fetch(url);
 
       const data = await response.ok
@@ -88,6 +81,11 @@ export default class DataFetch {
   updateDOM(data) {
     const target = document.getElementById(this.targetElementId);
 
+    // Clear any previous interval for the countdown
+    if (this.nextPrayerInterval) {
+      clearInterval(this.nextPrayerInterval);
+    }
+
     // Handle errors
     if (data.error) {
       target.innerHTML = `<p>${data.error}</p>`;
@@ -97,30 +95,34 @@ export default class DataFetch {
     // Handle valid data
     if (data.data && data.data.timings) {
       const timings = data.data.timings;
-      const prayerTimes = Object.entries(timings).map(([key, value]) => ({
-        name: key,
-        time: this.parseTime(value),
-        time12Hour: this.convertTo12Hour(value),
+      const prayerNames = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+      const sunriseTime = timings["Sunrise"];
+      const sunsetTime = timings["Sunset"];
+      const prayerTimes = prayerNames.map((name) => ({
+        name,
+        time: this.parseTime(timings[name]),
+        time12Hour: this.convertTo12Hour(timings[name]),
       }));
 
-      // Calculate durations and find the next prayer
-      let durations = [];
-      let nextPrayer = null;
-      let timeUntilNextPrayer = "";
+      // Find the next prayer
       const now = new Date();
+      const nextPrayer = prayerTimes.find((p) => p.time > now) || prayerTimes[0];
 
-      for (let i = 0; i < prayerTimes.length; i++) {
-        const current = prayerTimes[i];
-        const next = prayerTimes[i + 1] || prayerTimes[0];
-        const duration = this.calculateDuration(current.time, next.time);
-        durations.push(`${current.name} to ${next.name}: ${duration}`);
+      // Set up real-time countdown for the next prayer
+      const countdownElement = document.createElement("p");
+      countdownElement.id = "countdownTimer";
+      target.appendChild(countdownElement);
 
-        if (!nextPrayer && current.time > now) {
-          nextPrayer = current;
-          timeUntilNextPrayer = this.getTimeUntil(current.time);
+      this.nextPrayerInterval = setInterval(() => {
+        const timeUntil = this.getTimeUntil(nextPrayer.time);
+        countdownElement.innerText = `Time Until Next Prayer (${nextPrayer.name}): ${timeUntil}`;
+        if (timeUntil === "Now") {
+          clearInterval(this.nextPrayerInterval); // Stop countdown when the prayer starts
+          this.fetchData(); // Refresh data
         }
-      }
+      }, 1000);
 
+      // Display prayer timings
       target.innerHTML = `
         <h3>Prayer Timings for Dhaka, Bangladesh</h3>
         <p>Date: ${this.getCurrentDate()} (${this.getCurrentTime()})</p>
@@ -131,14 +133,13 @@ export default class DataFetch {
                 `<li><strong>${p.name}:</strong> ${p.time12Hour}</li>`
             )
             .join("")}
+            <li><strong>Sunrise:</strong> ${this.convertTo12Hour(sunriseTime)}</li>
+          <li><strong>Sunset:</strong> ${this.convertTo12Hour(sunsetTime)}</li>
         </ul>
-        <h4>Durations Between Prayers:</h4>
-        <ul>
-          ${durations.map((d) => `<li>${d}</li>`).join("")}
-        </ul>
-        <h4>Time Until Next Prayer:</h4>
-        <p>${nextPrayer ? `${nextPrayer.name} in ${timeUntilNextPrayer}` : "No upcoming prayers today"}</p>
+        <h4>Next Prayer:</h4>
+        <p>${nextPrayer.name} at ${nextPrayer.time12Hour}</p>
       `;
+      target.appendChild(countdownElement); // Add the countdown below prayer times
     } else {
       target.innerHTML = `<p>No valid data found</p>`;
     }
