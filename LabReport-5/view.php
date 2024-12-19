@@ -12,7 +12,6 @@
     <div class="container">
         <h2>Books List</h2>
         <a href="create.php" class="btn btn-success mb-3">Add New Book</a>
-        
         <a href="index.php" class="btn btn-primary mb-3">HOME</a>
         <table class="table table-bordered">
             <thead>
@@ -23,6 +22,7 @@
                     <th>Genre</th>
                     <th>Price</th>
                     <th>Stock</th>
+                    <th>Image</th>
                     <th style="width: 150px;">Actions</th>
                 </tr>
             </thead>
@@ -33,6 +33,7 @@
 
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $imagePath = !empty($row['book_image']) ? 'uploads/uploads' . $row['book_image'] : 'uploads/default.png'; // Default image if no upload
                         echo "<tr>
                             <td>{$row['BookID']}</td>
                             <td>{$row['Title']}</td>
@@ -40,6 +41,7 @@
                             <td>{$row['Genre']}</td>
                             <td>{$row['Price']}</td>
                             <td>{$row['Stock']}</td>
+                            <td><img src='{$imagePath}' alt='Book Image' style='width: 100px; height: auto;'></td>
                             <td>
                                 <a href='update.php?id={$row['BookID']}' class='btn btn-warning btn-sm'>Update</a>
                                 <a href='delete.php?id={$row['BookID']}' class='btn btn-danger btn-sm'>Delete</a>
@@ -47,7 +49,7 @@
                         </tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='7'>No books found</td></tr>";
+                    echo "<tr><td colspan='8'>No books found</td></tr>";
                 }
                 ?>
             </tbody>
